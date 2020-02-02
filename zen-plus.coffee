@@ -13,12 +13,12 @@ module.exports =
       default: true
       order: 2
     softWrap:
-      description: 'Enables / Disables soft wrapping when Zen is active.'
+      description: 'Enables / Disables soft wrapping when Zen-plus is active.'
       type: 'boolean'
       default: atom.config.get 'editor.softWrap'
       order: 3
     gutter:
-      description: 'Shows / Hides the gutter when Zen is active.'
+      description: 'Shows / Hides the gutter when Zen-plus is active.'
       type: 'boolean'
       default: false
       order: 4
@@ -28,7 +28,7 @@ module.exports =
       default: false
       order: 5
     minimap:
-      description: 'Enables / Disables the minimap plugin when Zen is active.'
+      description: 'Enables / Disables the minimap plugin when Zen-plus is active.'
       type: 'boolean'
       default: false
       order: 6
@@ -37,7 +37,7 @@ module.exports =
       default: atom.config.get 'editor.preferredLineLength'
       order: 7
     tabs:
-      description: 'Determines the tab style used while Zen is active.'
+      description: 'Determines the tab style used while Zen-plus is active.'
       type: 'string'
       default: 'hidden'
       enum: ['hidden', 'single', 'multiple']
@@ -54,50 +54,50 @@ module.exports =
       order: 9
 
   activate: (state) ->
-    atom.commands.add 'atom-workspace', 'zen:toggle', => @toggle()
+    atom.commands.add 'atom-workspace', 'zen-plus:toggle', => @toggle()
 
   toggle: ->
 
     unless (editor = atom.workspace.getActiveTextEditor())
-      # Prevent zen mode for undefined editors, e.g. settings
-      atom.notifications.addInfo 'Zen cannot be achieved in this view.'
+      # Prevent zen-plus mode for undefined editors, e.g. settings
+      atom.notifications.addInfo 'Zen-plus cannot be achieved in this view.'
       return
 
     body = document.querySelector('body')
     editorElm = editor.element
 
     # should really check current fullsceen state
-    fullscreen = atom.config.get 'Zen.fullscreen'
-    hideDocks = atom.config.get 'Zen.hideDocks'
-    width = atom.config.get 'Zen.width'
-    softWrap = atom.config.get 'Zen.softWrap'
-    minimap = atom.config.get 'Zen.minimap'
+    fullscreen = atom.config.get 'Zen-plus.fullscreen'
+    hideDocks = atom.config.get 'Zen-plus.hideDocks'
+    width = atom.config.get 'Zen-plus.width'
+    softWrap = atom.config.get 'Zen-plus.softWrap'
+    minimap = atom.config.get 'Zen-plus.minimap'
 
-    if body.getAttribute('data-zen') isnt 'true'
+    if body.getAttribute('data-zen-plus') isnt 'true'
 
-      if atom.config.get 'Zen.tabs'
-        body.setAttribute 'data-zen-tabs', atom.config.get 'Zen.tabs'
+      if atom.config.get 'Zen-plus.tabs'
+        body.setAttribute 'data-zen-plus-tabs', atom.config.get 'Zen-plus.tabs'
 
-      switch atom.config.get 'Zen.showWordCount'
+      switch atom.config.get 'Zen-plus.showWordCount'
         when 'Left'
-          body.setAttribute 'data-zen-word-count', 'visible'
-          body.setAttribute 'data-zen-word-count-position', 'left'
+          body.setAttribute 'data-zen-plus-word-count', 'visible'
+          body.setAttribute 'data-zen-plus-word-count-position', 'left'
         when 'Right'
-          body.setAttribute 'data-zen-word-count', 'visible'
-          body.setAttribute 'data-zen-word-count-position', 'right'
+          body.setAttribute 'data-zen-plus-word-count', 'visible'
+          body.setAttribute 'data-zen-plus-word-count-position', 'right'
         when 'Hidden'
-          body.setAttribute 'data-zen-word-count', 'hidden'
+          body.setAttribute 'data-zen-plus-word-count', 'hidden'
 
-      body.setAttribute 'data-zen-gutter', atom.config.get 'Zen.gutter'
+      body.setAttribute 'data-zen-plus-gutter', atom.config.get 'Zen-plus.gutter'
 
       # Enter Mode
-      body.setAttribute 'data-zen', 'true'
+      body.setAttribute 'data-zen-plus', 'true'
 
       # Soft Wrap
-      # Use zen soft wrapping setting's to override the default settings
+      # Use zen-plus soft wrapping setting's to override the default settings
       if editor.isSoftWrapped() isnt softWrap
         editor.setSoftWrapped softWrap
-        # restore default when leaving zen mode
+        # restore default when leaving zen-plus mode
         @unSoftWrap = true
 
       # Set width
@@ -114,7 +114,7 @@ module.exports =
         requestAnimationFrame ->
           $('atom-text-editor:not(.mini)').css 'width', editor.getDefaultCharWidth() * width
 
-      if atom.config.get 'Zen.typewriter'
+      if atom.config.get 'Zen-plus.typewriter'
         if not atom.config.get('editor.scrollPastEnd')
           atom.config.set('editor.scrollPastEnd', true)
           @scrollPastEndReset = true
@@ -125,8 +125,8 @@ module.exports =
           cursor = editor.getCursorScreenPosition()
           editorElm.setScrollTop(editor.getLineHeightInPixels() * (cursor.row - halfScreen))
 
-      @typewriterConfig = atom.config.observe 'Zen.typewriter', =>
-        if not atom.config.get 'Zen.typewriter'
+      @typewriterConfig = atom.config.observe 'Zen-plus.typewriter', =>
+        if not atom.config.get 'Zen-plus.typewriter'
           if @scrollPastEndReset
             @scrollPastEndReset = false
             atom.config.set 'editor.scrollPastEnd', false
@@ -169,12 +169,12 @@ module.exports =
 
     else
       # Exit Mode
-      body.setAttribute 'data-zen', 'false'
+      body.setAttribute 'data-zen-plus', 'false'
 
       # Leave fullscreen
       atom.setFullScreen false if fullscreen
 
-      # Restore previous soft wrap setting when leaving zen mode
+      # Restore previous soft wrap setting when leaving zen-plus mode
       if @unSoftWrap and editor isnt undefined
         editor.setSoftWrapped(atom.config.get('editor.softWrap'));
         @unSoftWrap = null
@@ -182,7 +182,7 @@ module.exports =
       # Unset the width
       $('atom-text-editor:not(.mini)').css 'width', ''
 
-      # Hack to fix #55 - scrollbars on statusbar after exiting Zen
+      # Hack to fix #55 - scrollbars on statusbar after exiting Zen-plus
       $('.status-bar-right').css 'overflow', 'hidden'
       requestAnimationFrame ->
         $('.status-bar-right').css 'overflow', ''

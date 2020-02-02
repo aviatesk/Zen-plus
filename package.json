@@ -1,15 +1,14 @@
 {
-  "name": "Zen",
-  "main": "./lib/zen",
-  "version": "0.18.0",
-  "private": true,
-  "description": "Distraction free writing.",
+  "name": "Zen-plus",
+  "main": "zen-plus",
+  "version": "1.0.0",
+  "description": "Distraction free writing. Being maintained.",
   "activationCommands": {
     "atom-text-editor": [
-      "zen:toggle"
+      "zen-plus:toggle"
     ]
   },
-  "repository": "https://github.com/defunkt/zen",
+  "repository": "https://github.com/aviatesk/zen-plus",
   "license": "MIT",
   "engines": {
     "atom": ">=1.17.0 <2.0.0"
@@ -20,6 +19,7 @@
   "keywords": [
     "writing",
     "zen",
+    "plus",
     "distraction free"
   ]
 }

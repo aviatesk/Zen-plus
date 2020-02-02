@@ -2,9 +2,9 @@
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'Zen'
+      'label': 'Zen-plus'
       'submenu': [
-        { 'label': 'Toggle', 'command': 'zen:toggle' }
+        { 'label': 'Toggle', 'command': 'zen-plus:toggle' }
       ]
     ]
   }

@@ -1,7 +1,7 @@
 @import "ui-variables";
 @import "syntax-variables";
 
-[data-zen="true"] {
+[data-zen-plus="true"] {
   atom-pane-container atom-pane .item-views {
     background: @syntax-background-color !important;
   }
@@ -39,9 +39,9 @@
       opacity: 1;
     }
   }
-  
 
-  &[data-zen-word-count="visible"] {
+
+  &[data-zen-plus-word-count="visible"] {
     .status-bar .word-count {
       position: fixed;
       bottom: @component-padding;
@@ -51,27 +51,27 @@
       color: @syntax-text-color;
     }
   }
-  &[data-zen-word-count-position="left"] {
+  &[data-zen-plus-word-count-position="left"] {
     .status-bar .word-count {
       right: auto;
       left: @component-padding;
     }
   }
 
-  &[data-zen-gutter="false"] {
+  &[data-zen-plus-gutter="false"] {
      .gutter {
        display: none;
-     } 
+     }
   }
 
-  &[data-zen-tabs="multiple"],
-  &[data-zen-tabs="single"] {
+  &[data-zen-plus-tabs="multiple"],
+  &[data-zen-plus-tabs="single"] {
     .tab-bar {
       display: flex;
       justify-content: center;
     }
   }
-  &[data-zen-tabs="single"] {
+  &[data-zen-plus-tabs="single"] {
     .tab-bar {
       .tab {
         display: none;
