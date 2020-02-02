@@ -1,7 +1,7 @@
 {
   "name": "Zen-plus",
   "main": "zen-plus",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Distraction free writing. Being maintained.",
   "activationCommands": {
     "atom-text-editor": [
