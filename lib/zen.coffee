@@ -8,36 +8,40 @@ module.exports =
       type: 'boolean'
       default: true
       order: 1
+    hideDocks:
+      type: 'boolean'
+      default: true
+      order: 2
     softWrap:
       description: 'Enables / Disables soft wrapping when Zen is active.'
       type: 'boolean'
       default: atom.config.get 'editor.softWrap'
-      order: 2
+      order: 3
     gutter:
       description: 'Shows / Hides the gutter when Zen is active.'
       type: 'boolean'
       default: false
-      order: 3
+      order: 4
     typewriter:
       description: 'Keeps the cursor vertically centered where possible.'
       type: 'boolean'
       default: false
-      order: 4
+      order: 5
     minimap:
       description: 'Enables / Disables the minimap plugin when Zen is active.'
       type: 'boolean'
       default: false
-      order: 5
+      order: 6
     width:
       type: 'integer'
       default: atom.config.get 'editor.preferredLineLength'
-      order: 6
+      order: 7
     tabs:
       description: 'Determines the tab style used while Zen is active.'
       type: 'string'
       default: 'hidden'
       enum: ['hidden', 'single', 'multiple']
-      order: 7
+      order: 8
     showWordCount:
       description: 'Show the word-count if you have the package installed.'
       type: 'string'
@@ -47,30 +51,27 @@ module.exports =
         'Left',
         'Right'
       ]
-      order: 8
+      order: 9
 
   activate: (state) ->
     atom.commands.add 'atom-workspace', 'zen:toggle', => @toggle()
 
   toggle: ->
 
-    if ! atom.workspace.getActiveTextEditor()
+    unless (editor = atom.workspace.getActiveTextEditor())
       # Prevent zen mode for undefined editors, e.g. settings
       atom.notifications.addInfo 'Zen cannot be achieved in this view.'
       return
 
     body = document.querySelector('body')
-    editor =  atom.workspace.getActiveTextEditor()
-    editorElm =  atom.workspace.getActiveTextEditor().element
+    editorElm = editor.element
 
     # should really check current fullsceen state
     fullscreen = atom.config.get 'Zen.fullscreen'
+    hideDocks = atom.config.get 'Zen.hideDocks'
     width = atom.config.get 'Zen.width'
     softWrap = atom.config.get 'Zen.softWrap'
     minimap = atom.config.get 'Zen.minimap'
-
-    # Left panel needed for hide/restore
-    panel = atom.workspace.getLeftDock()
 
     if body.getAttribute('data-zen') isnt 'true'
 
@@ -143,20 +144,17 @@ module.exports =
             cursor = editor.getCursorScreenPosition()
             editorElm.setScrollTop editor.getLineHeightInPixels() * (cursor.row - halfScreen)
 
-      # Hide TreeView
-      if $('.nuclide-file-tree').length
-        if panel.isVisible()
-          atom.commands.dispatch(
-            atom.views.getView(atom.workspace),
-            'nuclide-file-tree:toggle'
-          )
-          @restoreTree = true
-      else if $('.tree-view').length
-        atom.commands.dispatch(
-          atom.views.getView(atom.workspace),
-          'tree-view:toggle'
-        )
-        @restoreTree = true
+      # Hide docks
+      if hideDocks
+        if (left = atom.workspace.getLeftDock()) && left.isVisible && left.isVisible() && left.toggle
+          left.toggle()
+          @restoreLeft = true
+        if (bottom = atom.workspace.getBottomDock()) && bottom.isVisible && bottom.isVisible() && bottom.toggle
+          bottom.toggle()
+          @restoreBottom = true
+        if (right = atom.workspace.getRightDock()) && right.isVisible && right.isVisible() && right.toggle
+          right.toggle()
+          @restoreRight = true
 
       # Hide Minimap
       if $('atom-text-editor /deep/ atom-text-editor-minimap').length and not minimap
@@ -189,20 +187,16 @@ module.exports =
       requestAnimationFrame ->
         $('.status-bar-right').css 'overflow', ''
 
-      # Restore TreeView
-      if @restoreTree
-        if $('.nuclide-file-tree').length
-          unless panel.isVisible()
-            atom.commands.dispatch(
-              atom.views.getView(atom.workspace),
-              'nuclide-file-tree:toggle'
-            )
-        else
-          atom.commands.dispatch(
-            atom.views.getView(atom.workspace),
-            'tree-view:show'
-          )
-        @restoreTree = false
+      # Restore docks
+      if @restoreLeft && (left = atom.workspace.getLeftDock()) && left.toggle
+        left.toggle()
+        @restoreLeft = false
+      if @restoreBottom && (bottom = atom.workspace.getBottomDock()) && bottom.toggle
+        bottom.toggle()
+        @restoreBottom = false
+      if @restoreRight && (right = atom.workspace.getRightDock()) && right.toggle
+        right.toggle()
+        @restoreRight = false
 
       # Restore Minimap
       if @restoreMinimap and $('atom-text-editor /deep/ atom-text-editor-minimap').length isnt 1
@@ -211,7 +205,6 @@ module.exports =
           'minimap:toggle'
         )
         @restoreMinimap = false
-
 
       # Stop listening for pane or font change
       @fontChanged?.dispose()
