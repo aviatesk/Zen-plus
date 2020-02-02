@@ -1,3 +1,5 @@
+Copyright (c) 2020 Shuhei Kadowaki (Added when I forked the code base from below and changed it significantly)
+
 Copyright (c) Chris Wanstrath
 
 Permission is hereby granted, free of charge, to any person obtaining
