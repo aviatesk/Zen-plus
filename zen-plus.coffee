@@ -157,7 +157,7 @@ module.exports =
           @restoreRight = true
 
       # Hide Minimap
-      if $('atom-text-editor /deep/ atom-text-editor-minimap').length and not minimap
+      if $('atom-text-editor').find('atom-text-editor-minimap') and not minimap
         atom.commands.dispatch(
           atom.views.getView(atom.workspace),
           'minimap:toggle'
@@ -199,7 +199,7 @@ module.exports =
         @restoreRight = false
 
       # Restore Minimap
-      if @restoreMinimap and $('atom-text-editor /deep/ atom-text-editor-minimap').length isnt 1
+      if @restoreMinimap and $('atom-text-editor').find('atom-text-editor-minimap') is true
         atom.commands.dispatch(
           atom.views.getView(atom.workspace),
           'minimap:toggle'
